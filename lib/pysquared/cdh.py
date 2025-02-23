@@ -28,6 +28,7 @@ class CommandDataHandler:
             b"\x96\xa2": "exec_cmd",
             b"\xa5\xb4": "joke_reply",
             b"\x56\xc4": "FSK",
+            b"\x0c\x0b": "take_picture",
         }
         self._joke_reply: list[str] = config.joke_reply
         self._super_secret_code: bytes = config.super_secret_code.encode("utf-8")
@@ -185,4 +186,7 @@ class CommandDataHandler:
         self.logger.info("Executing command", args=args)
         exec(args)
 
+    def take_picture(self, cubesat: Satellite, args: str) -> None:
+        self.logger.info("Taking picture with args", args=args)
+        cubesat.camera.take_picture(args)
 

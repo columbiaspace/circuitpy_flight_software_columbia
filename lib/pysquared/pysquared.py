@@ -22,6 +22,7 @@ import sdcardio
 from micropython import const
 from storage import VfsFat, mount, umount
 
+
 import lib.adafruit_lis2mdl as adafruit_lis2mdl  # Magnetometer
 import lib.adafruit_tca9548a as adafruit_tca9548a  # I2C Multiplexer
 import lib.neopixel as neopixel  # RGB LED
@@ -32,6 +33,7 @@ from lib.adafruit_rfm import rfm9x, rfm9xfsk  # Radio
 from lib.pysquared.config import Config  # Configs
 from lib.pysquared.nvm.counter import Counter
 from lib.pysquared.nvm.flag import Flag
+from lib.pysquared.camera import Camera
 
 try:
     from typing import Any, Callable, Optional, OrderedDict, TextIO, Union
@@ -212,7 +214,11 @@ class Satellite:
             )
             self.hardware[hardware_key] = False
             return
-
+    @safe_init
+    def init_camera(self, hardware_key: str) -> None:
+        self.camera: Camera = Camera()
+        self.hardware[hardware_key] = True
+        
     def __init__(self, config: Config, logger: Logger, version: str) -> None:
         # here assiging config to a var so 'init_radio' function can
         # access 'radio_cfg' inside config
@@ -282,6 +288,7 @@ class Satellite:
                 ("I2C1", False),
                 ("UART", False),
                 ("Radio1", False),
+                ("Camera1", False),
                 ("IMU", False),
                 ("Mag", False),
                 ("SDcard", False),
@@ -382,11 +389,12 @@ class Satellite:
         ######## Temporary Fix for RF_ENAB ########
 
         self.init_radio(hardware_key="Radio1")
+        self.init_camera(hardware_key="Camera1")
         self.imu: LSM6DSOX = self.init_general_hardware(
             LSM6DSOX, i2c_bus=self.i2c1, address=0x6B, hardware_key="IMU"
         )
         self.mangetometer: adafruit_lis2mdl.LIS2MDL = self.init_general_hardware(
-            adafruit_lis2mdl.LIS2MDL, self.i2c1, hardware_key="Mag"
+            adafruit_lis2mdl.LIS2MDL, self.i2c1, hardwareinit_cameraCamera1init_cameraCamera1init_cameraCamera1init_cameraCamera1init_cameraCamera1init_cameraCamera1init_cameraCamera1_key="Mag"
         )
         self.init_rtc(hardware_key="RTC")
         self.init_sd_card(hardware_key="SD Card")
