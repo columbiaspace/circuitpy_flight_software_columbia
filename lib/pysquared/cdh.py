@@ -184,3 +184,5 @@ class CommandDataHandler:
     def exec_cmd(self, cubesat: Satellite, args: str) -> None:
         self.logger.info("Executing command", args=args)
         exec(args)
+
+
