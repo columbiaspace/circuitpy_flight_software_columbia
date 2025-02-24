@@ -13,10 +13,10 @@ import time
 from collections import OrderedDict
 from os import chdir, mkdir, stat
 
+# import machine
 import board
 import busio
 import digitalio
-import machine
 import microcontroller
 import sdcardio
 from micropython import const
@@ -24,13 +24,13 @@ from storage import VfsFat, mount, umount
 
 import lib.adafruit_lis2mdl as adafruit_lis2mdl  # Magnetometer
 import lib.adafruit_tca9548a as adafruit_tca9548a  # I2C Multiplexer
-import lib.neopixel as neopixel  # RGB LED
+# import lib.neopixel as neopixel  # RGB LED
 import lib.pysquared.nvm.register as register
 import lib.rv3028.rv3028 as rv3028  # Real Time Clock
 from lib.adafruit_lsm6ds.lsm6dsox import LSM6DSOX  # IMU
 from lib.adafruit_rfm import rfm9x, rfm9xfsk  # Radio
 from lib.pysquared.config import Config  # Configs
-from lib.pysquared.nvm.counter import Counter
+# from lib.pysquared.nvm.counter import Counter
 from lib.pysquared.nvm.flag import Flag
 
 try:
@@ -51,7 +51,7 @@ class Satellite:
     """
 
     # General NVM counters
-    boot_count: Counter = Counter(index=register.BOOTCNT, datastore=microcontroller.nvm)
+    # boot_count: Counter = Counter(index=register.BOOTCNT, datastore=microcontroller.nvm)
 
     # Define NVM flags
     f_softboot: Flag = Flag(
@@ -188,15 +188,15 @@ class Satellite:
         sys.path.append("/sd")
         self.hardware[hardware_key] = True
 
-    @safe_init
-    def init_neopixel(self, hardware_key: str) -> None:
-        self.neopwr: digitalio.DigitalInOut = digitalio.DigitalInOut(board.NEO_PWR)
-        self.neopwr.switch_to_output(value=True)
-        self.neopixel: neopixel.NeoPixel = neopixel.NeoPixel(
-            board.NEOPIX, 1, brightness=0.2, pixel_order=neopixel.GRB
-        )
-        self.neopixel[0] = (0, 0, 255)
-        self.hardware[hardware_key] = True
+    # @safe_init
+    # def init_neopixel(self, hardware_key: str) -> None:
+    #     self.neopwr: digitalio.DigitalInOut = digitalio.DigitalInOut(board.NEO_PWR)
+    #     self.neopwr.switch_to_output(value=True)
+    #     self.neopixel: neopixel.NeoPixel = neopixel.NeoPixel(
+    #         board.NEOPIX, 1, brightness=0.2, pixel_order=neopixel.GRB
+    #     )
+    #     self.neopixel[0] = (0, 0, 255)
+    #     self.hardware[hardware_key] = True
 
     @safe_init
     def init_tca_multiplexer(self, hardware_key: str) -> None:
@@ -313,7 +313,6 @@ class Satellite:
         """
         Set the CPU Clock Speed
         """
-        machine.set_clock(62500000)
 
         """
         Intializing Communication Buses
@@ -390,7 +389,7 @@ class Satellite:
         )
         self.init_rtc(hardware_key="RTC")
         self.init_sd_card(hardware_key="SD Card")
-        self.init_neopixel(hardware_key="NEOPIX")
+        # self.init_neopixel(hardware_key="NEOPIX")
         self.init_tca_multiplexer(hardware_key="TCA")
 
         """
@@ -498,38 +497,38 @@ class Satellite:
     def turbo(self) -> bool:
         return self.turbo_clock
 
-    @turbo.setter
-    def turbo(self, value: bool) -> None:
-        self.turbo_clock: bool = value
+    # @turbo.setter
+    # def turbo(self, value: bool) -> None:
+    #     self.turbo_clock: bool = value
 
-        try:
-            if value is True:
-                machine.set_clock(125000000)  # 125Mhz
-            else:
-                machine.set_clock(62500000)  # 62.5Mhz
+    #     try:
+    #         if value is True:
+    #             machine.set_clock(125000000)  # 125Mhz
+    #         else:
+    #             machine.set_clock(62500000)  # 62.5Mhz
 
-        except Exception as e:
-            self.logger.error("There was an error trying to set the clock", e)
+    #     except Exception as e:
+    #         self.logger.error("There was an error trying to set the clock", e)
 
-    @property
-    def rgb(self) -> tuple[int, int, int]:
-        return self.neopixel[0]
+    # @property
+    # def rgb(self) -> tuple[int, int, int]:
+    #     return self.neopixel[0]
 
-    @rgb.setter
-    def rgb(self, value: tuple[int, int, int]) -> None:
-        if not self.hardware["NEOPIX"]:
-            self.logger.warning("The NEOPIXEL device is not initialized")
-            return
+    # @rgb.setter
+    # def rgb(self, value: tuple[int, int, int]) -> None:
+    #     if not self.hardware["NEOPIX"]:
+    #         self.logger.warning("The NEOPIXEL device is not initialized")
+    #         return
 
-        # NEOPIX is initialized
-        try:
-            self.neopixel[0] = value
-        except Exception as e:
-            self.logger.error(
-                "There was an error trying to set the new RGB value",
-                e,
-                value=value,
-            )
+    #     # NEOPIX is initialized
+    #     try:
+    #         self.neopixel[0] = value
+    #     except Exception as e:
+    #         self.logger.error(
+    #             "There was an error trying to set the new RGB value",
+    #             e,
+    #             value=value,
+    #         )
 
     @property
     def get_system_uptime(self) -> int:
@@ -667,12 +666,12 @@ class Satellite:
         """
         try:
             if "crit" in mode:
-                self.neopixel.brightness = 0
+                # self.neopixel.brightness = 0
                 self.enable_rf.value = False
                 self.power_mode: str = "critical"
 
             elif "min" in mode:
-                self.neopixel.brightness = 0
+                # self.neopixel.brightness = 0
                 self.enable_rf.value = False
 
                 self.power_mode: str = "minimum"

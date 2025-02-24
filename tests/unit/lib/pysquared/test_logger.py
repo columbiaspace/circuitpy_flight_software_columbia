@@ -1,6 +1,6 @@
 import pytest
 
-import lib.pysquared.nvm.counter as counter
+# import lib.pysquared.nvm.counter as counter
 from lib.pysquared.logger import Logger
 from mocks.circuitpython.byte_array import ByteArray
 
@@ -9,7 +9,7 @@ from mocks.circuitpython.byte_array import ByteArray
 def logger():
     datastore = ByteArray(size=8)
     index = 0
-    count = counter.Counter(index, datastore)
+    # count = counter.Counter(index, datastore)
     return Logger(count)
 
 

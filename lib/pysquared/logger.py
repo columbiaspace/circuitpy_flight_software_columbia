@@ -22,10 +22,10 @@ class LogLevel:
 class Logger:
     def __init__(
         self,
-        error_counter: Counter,
+        # error_counter: Counter,
         log_level: int = LogLevel.NOTSET,
     ) -> None:
-        self._error_counter: Counter = error_counter
+        # self._error_counter: Counter = error_counter
         self._log_level: int = log_level
 
     def _can_print_this_level(self, level_value: int) -> bool:
@@ -78,7 +78,7 @@ class Logger:
         Log a message with severity level ERROR.
         """
         kwargs["err"] = traceback.format_exception(err)
-        self._error_counter.increment()
+        # self._error_counter.increment()
         self._log("ERROR", 4, message, **kwargs)
 
     def critical(self, message: str, err: Exception, **kwargs) -> None:
@@ -86,8 +86,8 @@ class Logger:
         Log a message with severity level CRITICAL.
         """
         kwargs["err"] = traceback.format_exception(err)
-        self._error_counter.increment()
+        # self._error_counter.increment()
         self._log("CRITICAL", 5, message, **kwargs)
 
     def get_error_count(self) -> int:
-        return self._error_counter.get()
+        return 0 
